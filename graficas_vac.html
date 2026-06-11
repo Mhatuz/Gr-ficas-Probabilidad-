@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variables Aleatorias Continuas — EPN</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F1117;
+    color: #E2E8F0;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    padding: 28px 20px;
+  }
+
+  header { margin-bottom: 28px; }
+  header .eyebrow {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: #64748B; margin-bottom: 6px;
+  }
+  header h1 { font-size: 22px; font-weight: 700; color: #E2E8F0; }
+  header p  { font-size: 12px; color: #64748B; margin-top: 4px; }
+
+  /* tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .tab {
+    padding: 7px 18px; border-radius: 8px; border: 1px solid #2A2F3D;
+    background: transparent; color: #64748B;
+    font-family: 'Courier New', monospace; font-size: 12px;
+    cursor: pointer; transition: all .15s;
+  }
+  .tab.active-e1 { border-color: #38BDF8; color: #38BDF8; background: #38BDF811; font-weight: 700; }
+  .tab.active-e2 { border-color: #A78BFA; color: #A78BFA; background: #A78BFA11; font-weight: 700; }
+  .tab.active-e3 { border-color: #34D399; color: #34D399; background: #34D39911; font-weight: 700; }
+
+  /* function badge */
+  .fn-badge {
+    border-radius: 8px; padding: 10px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+    font-size: 14px; font-weight: 700;
+  }
+  .fn-badge span.domain { font-size: 12px; font-weight: 400; color: #64748B; }
+
+  /* cards */
+  .card {
+    background: #181C24; border: 1px solid #2A2F3D;
+    border-radius: 12px; padding: 18px 16px 12px;
+    margin-bottom: 0;
+  }
+  .card-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 2px;
+  }
+  .card-sub { font-size: 11px; color: #64748B; margin-bottom: 14px; }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px; margin: 18px 0;
+  }
+  .divider hr { flex: 1; border: none; border-top: 1px solid #2A2F3D; }
+  .divider span { font-size: 10px; color: #64748B; letter-spacing: 2px; white-space: nowrap; }
+
+  /* prob badge inside chart card */
+  .prob-badge {
+    display: inline-block; border-radius: 6px;
+    padding: 3px 12px; font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  canvas { width: 100% !important; }
+
+  footer { margin-top: 22px; text-align: center; font-size: 10px; color: #2A2F3D; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Probabilidad y Estadística · EPN · GR2</div>
+  <h1>Variables Aleatorias Continuas</h1>
+  <p>Funciones de densidad — gráfica pura + área de probabilidad + frecuencia acumulada F(x)</p>
+</header>
+
+<div class="tabs">
+  <button class="tab" data-tab="0" onclick="switchTab(0)">Ej. 1 — Eje torneado</button>
+  <button class="tab" data-tab="1" onclick="switchTab(1)">Ej. 2 — Sensor voltaje</button>
+  <button class="tab" data-tab="2" onclick="switchTab(2)">Ej. 3 — Actuador</button>
+</div>
+
+<!-- ══ EJERCICIO 1 ══ -->
+<div id="ex0">
+  <div class="fn-badge" style="border:1px solid #38BDF833; background:#38BDF811;">
+    <span style="color:#38BDF8">f(x) = ¾ (x−19)(21−x)</span>
+    <span class="domain">x ∈ [19, 21]</span>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#38BDF8">① FUNCIÓN DE DENSIDAD</div>
+    <div class="card-sub">Curva f(x) — sin probabilidad sombreada · línea punteada en μ = 20</div>
+    <canvas id="pure0" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>PROBABILIDAD DEL INTERVALO</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#38BDF8">② ÁREA DE PROBABILIDAD</div>
+    <div class="card-sub">Área sombreada: rango de aceptación del eje (19.6 mm – 20.4 mm)</div>
+    <div class="prob-badge" style="background:#38BDF822; border:1px solid #38BDF855; color:#38BDF8">
+      P(19.6 ≤ X ≤ 20.4) = <strong>0.9328</strong>
+    </div>
+    <canvas id="shade0" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>FRECUENCIA ACUMULADA</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#38BDF8">③ FDA — F(x) ACUMULADA</div>
+    <div class="card-sub">F(x) = ¾ (−x³/3 + 20x² − 399x) + C  · sube de 0 a 1 en [19, 21]</div>
+    <canvas id="cdf0" height="220"></canvas>
+  </div>
+</div>
+
+<!-- ══ EJERCICIO 2 ══ -->
+<div id="ex1" class="hidden">
+  <div class="fn-badge" style="border:1px solid #A78BFA33; background:#A78BFA11;">
+    <span style="color:#A78BFA">f(v) = 3/16 (4v − v² − 3)</span>
+    <span class="domain">v ∈ [1, 3]</span>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#A78BFA">① FUNCIÓN DE DENSIDAD</div>
+    <div class="card-sub">Curva f(v) — sin probabilidad sombreada · línea punteada en μ = 2</div>
+    <canvas id="pure1" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>PROBABILIDAD DEL INTERVALO</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#A78BFA">② ÁREA DE PROBABILIDAD</div>
+    <div class="card-sub">Área sombreada: rango aceptable del sensor (1.5 V – 2.5 V)</div>
+    <div class="prob-badge" style="background:#A78BFA22; border:1px solid #A78BFA55; color:#A78BFA">
+      P(1.5 ≤ V ≤ 2.5) = <strong>0.7188</strong>
+    </div>
+    <canvas id="shade1" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>FRECUENCIA ACUMULADA</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#A78BFA">③ FDA — F(v) ACUMULADA</div>
+    <div class="card-sub">F(v) = (3/16)(2v² − v³/3 − 3v) + C  · sube de 0 a 1 en [1, 3]</div>
+    <canvas id="cdf1" height="220"></canvas>
+  </div>
+</div>
+
+<!-- ══ EJERCICIO 3 ══ -->
+<div id="ex2" class="hidden">
+  <div class="fn-badge" style="border:1px solid #34D39933; background:#34D39911;">
+    <span style="color:#34D399">f(t) = t/18</span>
+    <span class="domain">t ∈ [0, 6]</span>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#34D399">① FUNCIÓN DE DENSIDAD</div>
+    <div class="card-sub">Curva f(t) — lineal creciente · E[T] = 4 ms · sesgo izquierda</div>
+    <canvas id="pure2" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>PROBABILIDAD DEL INTERVALO</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#34D399">② ÁREA DE PROBABILIDAD</div>
+    <div class="card-sub">Área sombreada: actuador responde dentro del requerimiento (t &lt; 4 ms)</div>
+    <div class="prob-badge" style="background:#34D39922; border:1px solid #34D39955; color:#34D399">
+      P(T &lt; 4) = <strong>0.4444</strong>
+    </div>
+    <canvas id="shade2" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>FRECUENCIA ACUMULADA</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#34D399">③ FDA — F(t) ACUMULADA</div>
+    <div class="card-sub">F(t) = t²/36  · parábola convexa de 0 a 1 en [0, 6] · forma pizarra</div>
+    <canvas id="cdf2" height="220"></canvas>
+  </div>
+</div>
+
+<footer>Andree Mateo Lomas Moncayo · GR2 · 2025-2026</footer>
+
+<script>
+// ── utilidades ──
+function linspace(a, b, n) {
+  return Array.from({ length: n }, (_, i) => a + (i / (n - 1)) * (b - a));
+}
+
+// ── funciones ──
+const f1 = x => (x<19||x>21) ? 0 : 0.75*(x-19)*(21-x);
+const f2 = v => (v<1||v>3)   ? 0 : (3/16)*(4*v - v*v - 3);
+const f3 = t => (t<0||t>6)   ? 0 : t/18;
+
+// ── config base Chart.js ──
+Chart.defaults.color = '#64748B';
+Chart.defaults.font.family = "'Courier New', monospace";
+Chart.defaults.font.size = 11;
+
+const GRID = { color: '#2A2F3D', drawTicks: false };
+const GRID_ZERO = { color: '#2A2F3D' };
+
+function baseOptions(xLabel, yLabel, refX, refColor) {
+  return {
+    responsive: true,
+    animation: { duration: 400 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1E2333',
+        borderColor: refColor + '44',
+        borderWidth: 1,
+        titleColor: refColor,
+        bodyColor: '#E2E8F0',
+        callbacks: {
+          title: items => `${xLabel} = ${(+items[0].label).toFixed(3)}`,
+          label: item => `f = ${(+item.raw).toFixed(5)}`,
+        }
+      },
+      annotation: undefined,
+    },
+    scales: {
+      x: {
+        title: { display: true, text: xLabel, color: '#64748B', font: { size: 11 } },
+        grid: GRID, ticks: { maxTicksLimit: 8 },
+      },
+      y: {
+        title: { display: true, text: yLabel, color: '#64748B', font: { size: 11 } },
+        grid: GRID, ticks: { maxTicksLimit: 6 }, min: 0,
+      }
+    }
+  };
+}
+
+// ── función para dibujar línea vertical de referencia ──
+function drawRefLine(chart, xVal, color) {
+  const ctx = chart.ctx;
+  const xScale = chart.scales.x;
+  const yScale = chart.scales.y;
+  const xPx = xScale.getPixelForValue(xVal);
+  ctx.save();
+  ctx.setLineDash([5, 4]);
+  ctx.strokeStyle = color + 'AA';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(xPx, yScale.top);
+  ctx.lineTo(xPx, yScale.bottom);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // etiqueta
+  ctx.fillStyle = color;
+  ctx.font = "10px 'Courier New', monospace";
+  ctx.fillText('μ=' + xVal, xPx + 4, yScale.top + 14);
+  ctx.restore();
+}
+
+// ── EJERCICIO 1 ──
+(function() {
+  const N = 300;
+  const xs = linspace(18.7, 21.3, N);
+  const ys = xs.map(f1);
+  const color = '#38BDF8';
+
+  // gráfica pura
+  const ctx0 = document.getElementById('pure0');
+  const chart0 = new Chart(ctx0, {
+    type: 'line',
+    data: {
+      labels: xs.map(x => x.toFixed(3)),
+      datasets: [{
+        data: ys,
+        borderColor: color,
+        borderWidth: 2.5,
+        pointRadius: 0,
+        tension: 0.3,
+        fill: false,
+      }]
+    },
+    options: baseOptions('x (mm)', 'f(x)', 20, color),
+  });
+  chart0.options.plugins.afterDraw = undefined;
+  ctx0.addEventListener('_ready', () => {});
+  // plugin línea ref
+  Chart.register({
+    id: 'ref0',
+    afterDraw(chart) {
+      if (chart.canvas.id === 'pure0') drawRefLine(chart, 20, color);
+    }
+  });
+
+  // gráfica sombreada
+  const xs2 = linspace(19, 21, 300);
+  const ys2 = xs2.map(f1);
+  const shadeFill = xs2.map((x, i) => (x >= 19.6 && x <= 20.4) ? ys2[i] : NaN);
+
+  const ctx1 = document.getElementById('shade0');
+  new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: xs2.map(x => x.toFixed(3)),
+      datasets: [
+        {
+          data: ys2,
+          borderColor: color,
+          borderWidth: 2.5,
+          pointRadius: 0,
+          tension: 0.3,
+          fill: false,
+          order: 1,
+        },
+        {
+          data: shadeFill,
+          borderColor: 'transparent',
+          borderWidth: 0,
+          pointRadius: 0,
+          tension: 0.3,
+          fill: 'origin',
+          backgroundColor: color + '55',
+          order: 2,
+        }
+      ]
+    },
+    options: {
+      ...baseOptions('x (mm)', 'f(x)', null, color),
+      plugins: {
+        ...baseOptions('x (mm)', 'f(x)', null, color).plugins,
+      }
+    },
+    plugins: [{
+      id: 'refShade0',
+      afterDraw(chart) {
+        if (chart.canvas.id !== 'shade0') return;
+        const ctx = chart.ctx;
+        const xs = chart.scales.x;
+        const ys = chart.scales.y;
+        [19.6, 20.4].forEach(v => {
+          const px = xs.getPixelForValue(v.toFixed(3));
+          ctx.save();
+          ctx.setLineDash([4,3]);
+          ctx.strokeStyle = color + 'BB';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(px, ys.top); ctx.lineTo(px, ys.bottom); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = color;
+          ctx.font = "10px 'Courier New',monospace";
+          ctx.fillText(v, px+3, ys.top+14);
+          ctx.restore();
+        });
+      }
+    }]
+  });
+})();
+
+// ── EJERCICIO 2 ──
+(function() {
+  const color = '#A78BFA';
+  const xs = linspace(0.7, 3.3, 300);
+  const ys = xs.map(f2);
+
+  const ctx0 = document.getElementById('pure1');
+  new Chart(ctx0, {
+    type: 'line',
+    data: {
+      labels: xs.map(x => x.toFixed(3)),
+      datasets: [{ data: ys, borderColor: color, borderWidth: 2.5, pointRadius: 0, tension: 0.3, fill: false }]
+    },
+    options: baseOptions('v (V)', 'f(v)', 2, color),
+    plugins: [{
+      id: 'ref1',
+      afterDraw(chart) {
+        if (chart.canvas.id === 'pure1') drawRefLine(chart, 2, color);
+      }
+    }]
+  });
+
+  const xs2 = linspace(1, 3, 300);
+  const ys2 = xs2.map(f2);
+  const shade = xs2.map((x,i) => (x>=1.5 && x<=2.5) ? ys2[i] : NaN);
+
+  new Chart(document.getElementById('shade1'), {
+    type: 'line',
+    data: {
+      labels: xs2.map(x => x.toFixed(3)),
+      datasets: [
+        { data: ys2, borderColor: color, borderWidth: 2.5, pointRadius: 0, tension: 0.3, fill: false, order: 1 },
+        { data: shade, borderColor: 'transparent', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: 'origin', backgroundColor: color+'55', order: 2 }
+      ]
+    },
+    options: baseOptions('v (V)', 'f(v)', null, color),
+    plugins: [{
+      id: 'refShade1',
+      afterDraw(chart) {
+        if (chart.canvas.id !== 'shade1') return;
+        const ctx = chart.ctx; const xs = chart.scales.x; const ys = chart.scales.y;
+        [1.5, 2.5].forEach(v => {
+          const px = xs.getPixelForValue(v.toFixed(3));
+          ctx.save(); ctx.setLineDash([4,3]); ctx.strokeStyle = color+'BB'; ctx.lineWidth=1.5;
+          ctx.beginPath(); ctx.moveTo(px,ys.top); ctx.lineTo(px,ys.bottom); ctx.stroke();
+          ctx.setLineDash([]); ctx.fillStyle=color; ctx.font="10px 'Courier New',monospace";
+          ctx.fillText(v+' V', px+3, ys.top+14); ctx.restore();
+        });
+      }
+    }]
+  });
+})();
+
+// ── EJERCICIO 3 ──
+(function() {
+  const color = '#34D399';
+  const xs = linspace(-0.3, 6.3, 300);
+  const ys = xs.map(f3);
+
+  const ctx0 = document.getElementById('pure2');
+  new Chart(ctx0, {
+    type: 'line',
+    data: {
+      labels: xs.map(x => x.toFixed(3)),
+      datasets: [{ data: ys, borderColor: color, borderWidth: 2.5, pointRadius: 0, tension: 0.3, fill: false }]
+    },
+    options: {
+      ...baseOptions('t (ms)', 'f(t)', 3, color),
+    },
+    plugins: [{
+      id: 'ref2',
+      afterDraw(chart) {
+        if (chart.canvas.id !== 'pure2') return;
+        const ctx = chart.ctx; const xs = chart.scales.x; const ys = chart.scales.y;
+        const px = xs.getPixelForValue((4).toFixed(3));
+        ctx.save(); ctx.setLineDash([5,4]); ctx.strokeStyle=color+'AA'; ctx.lineWidth=1.5;
+        ctx.beginPath(); ctx.moveTo(px,ys.top); ctx.lineTo(px,ys.bottom); ctx.stroke();
+        ctx.setLineDash([]); ctx.fillStyle=color; ctx.font="10px 'Courier New',monospace";
+        ctx.fillText('E[T]=4', px+4, ys.top+14); ctx.restore();
+      }
+    }]
+  });
+
+  const xs2 = linspace(0, 6, 300);
+  const ys2 = xs2.map(f3);
+  const shade = xs2.map((x,i) => (x<=4) ? ys2[i] : NaN);
+
+  new Chart(document.getElementById('shade2'), {
+    type: 'line',
+    data: {
+      labels: xs2.map(x => x.toFixed(3)),
+      datasets: [
+        { data: ys2, borderColor: color, borderWidth: 2.5, pointRadius: 0, tension: 0.3, fill: false, order: 1 },
+        { data: shade, borderColor: 'transparent', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: 'origin', backgroundColor: color+'55', order: 2 }
+      ]
+    },
+    options: baseOptions('t (ms)', 'f(t)', null, color),
+    plugins: [{
+      id: 'refShade2',
+      afterDraw(chart) {
+        if (chart.canvas.id !== 'shade2') return;
+        const ctx = chart.ctx; const xs = chart.scales.x; const ys = chart.scales.y;
+        const px = xs.getPixelForValue((4).toFixed(3));
+        ctx.save(); ctx.setLineDash([4,3]); ctx.strokeStyle=color+'BB'; ctx.lineWidth=1.5;
+        ctx.beginPath(); ctx.moveTo(px,ys.top); ctx.lineTo(px,ys.bottom); ctx.stroke();
+        ctx.setLineDash([]); ctx.fillStyle=color; ctx.font="10px 'Courier New',monospace";
+        ctx.fillText('4 ms', px+3, ys.top+14); ctx.restore();
+      }
+    }]
+  });
+})();
+
+// ── FDA (CDF) numéricas por integración trapezoidal ──
+function buildCDF(fn, a, b, n = 300) {
+  const xs = linspace(a, b, n);
+  const dx = (b - a) / (n - 1);
+  const cdf = [0];
+  for (let i = 1; i < n; i++) {
+    cdf.push(cdf[i-1] + 0.5 * (fn(xs[i-1]) + fn(xs[i])) * dx);
+  }
+  // normalizar al máximo (debe ser ≈1)
+  const max = cdf[cdf.length - 1];
+  return { xs, cdf: cdf.map(v => +(v / max).toFixed(5)) };
+}
+
+function cdfOptions(xLabel, color) {
+  return {
+    responsive: true,
+    animation: { duration: 400 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1E2333',
+        borderColor: color + '44',
+        borderWidth: 1,
+        titleColor: color,
+        bodyColor: '#E2E8F0',
+        callbacks: {
+          title: items => `${xLabel} = ${(+items[0].label).toFixed(3)}`,
+          label: item => `F = ${(+item.raw).toFixed(4)}`,
+        }
+      },
+    },
+    scales: {
+      x: {
+        title: { display: true, text: xLabel, color: '#64748B', font: { size: 11 } },
+        grid: { color: '#2A2F3D', drawTicks: false },
+        ticks: { maxTicksLimit: 8 },
+      },
+      y: {
+        title: { display: true, text: 'F(x)', color: '#64748B', font: { size: 11 } },
+        grid: { color: '#2A2F3D', drawTicks: false },
+        min: 0, max: 1,
+        ticks: { maxTicksLimit: 6, callback: v => v.toFixed(1) },
+      }
+    }
+  };
+}
+
+function drawCDFChart(canvasId, fn, a, b, color, xLabel, padLeft = 0.15, padRight = 0.15) {
+  const { xs, cdf } = buildCDF(fn, a, b);
+  const range = b - a;
+
+  // puntos de cola izquierda (F=0) y cola derecha (F=1)
+  const leftXs  = linspace(a - range * padLeft, a, 20);
+  const rightXs = linspace(b, b + range * padRight, 20);
+
+  const allX = [...leftXs, ...xs, ...rightXs];
+  const allY = [
+    ...leftXs.map(() => 0),
+    ...cdf,
+    ...rightXs.map(() => 1),
+  ];
+
+  new Chart(document.getElementById(canvasId), {
+    type: 'line',
+    data: {
+      labels: allX.map(x => x.toFixed(3)),
+      datasets: [{
+        data: allY,
+        borderColor: color,
+        borderWidth: 2.5,
+        pointRadius: 0,
+        tension: 0.3,
+        fill: false,
+      }]
+    },
+    options: cdfOptions(xLabel, color),
+    plugins: [{
+      id: 'cdfRef_' + canvasId,
+      afterDraw(chart) {
+        if (chart.canvas.id !== canvasId) return;
+        const ctx = chart.ctx;
+        const xScale = chart.scales.x;
+        const yScale = chart.scales.y;
+        // línea horizontal en F=0.5
+        const y05 = yScale.getPixelForValue(0.5);
+        ctx.save();
+        ctx.setLineDash([4, 3]);
+        ctx.strokeStyle = color + '66';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(xScale.left, y05);
+        ctx.lineTo(xScale.right, y05);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = color + 'AA';
+        ctx.font = "10px 'Courier New',monospace";
+        ctx.fillText('F=0.5', xScale.left + 4, y05 - 4);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+// Dibujar las 3 FDA
+drawCDFChart('cdf0', f1, 19, 21, '#38BDF8', 'x (mm)');
+drawCDFChart('cdf1', f2,  1,  3, '#A78BFA', 'v (V)');
+drawCDFChart('cdf2', f3,  0,  6, '#34D399', 't (ms)', 0.05, 0.05);
+
+// ── tabs ──
+const COLORS = ['active-e1','active-e2','active-e3'];
+function switchTab(n) {
+  [0,1,2].forEach(i => {
+    document.getElementById('ex'+i).classList.toggle('hidden', i!==n);
+    const btn = document.querySelector(`[data-tab="${i}"]`);
+    btn.className = 'tab' + (i===n ? ' '+COLORS[i] : '');
+  });
+}
+// activar tab 0 al cargar
+switchTab(0);
+</script>
+</body>
+</html>
