@@ -121,7 +121,7 @@
 <!-- ══ EJERCICIO 2 ══ -->
 <div id="ex1" class="hidden">
   <div class="fn-badge" style="border:1px solid #A78BFA33; background:#A78BFA11;">
-    <span style="color:#A78BFA">f(v) = 3/16 (4v − v² − 3)</span>
+    <span style="color:#A78BFA">f(v) = 3/4 (4v − v² − 3)</span>
     <span class="domain">v ∈ [1, 3]</span>
   </div>
   <div class="card">
@@ -134,14 +134,14 @@
     <div class="card-title" style="color:#A78BFA">② ÁREA DE PROBABILIDAD</div>
     <div class="card-sub">Área sombreada: rango aceptable del sensor (1.5 V – 2.5 V)</div>
     <div class="prob-badge" style="background:#A78BFA22; border:1px solid #A78BFA55; color:#A78BFA">
-      P(1.5 ≤ V ≤ 2.5) = <strong>0.7188</strong>
+      P(1.5 ≤ V ≤ 2.5) = <strong>0.6875</strong>
     </div>
     <canvas id="shade1" height="220"></canvas>
   </div>
   <div class="divider"><hr><span>FRECUENCIA ACUMULADA</span><hr></div>
   <div class="card">
     <div class="card-title" style="color:#A78BFA">③ FDA — F(v) ACUMULADA</div>
-    <div class="card-sub">F(v) = (3/16)(2v² − v³/3 − 3v) + C  · sube de 0 a 1 en [1, 3]</div>
+    <div class="card-sub">F(v) = (3/4)(2v² − v³/3 − 3v) + C  · sube de 0 a 1 en [1, 3]</div>
     <canvas id="cdf1" height="220"></canvas>
   </div>
 </div>
@@ -184,7 +184,7 @@ function linspace(a, b, n) {
 
 // ── funciones ──
 const f1 = x => (x<19||x>21) ? 0 : 0.75*(x-19)*(21-x);
-const f2 = v => (v<1||v>3)   ? 0 : (3/16)*(4*v - v*v - 3);
+const f2 = v => (v<1||v>3)   ? 0 : (3/4)*(4*v - v*v - 3);
 const f3 = t => (t<0||t>6)   ? 0 : t/18;
 
 // ── config base Chart.js ──
@@ -579,4 +579,5 @@ function switchTab(n) {
 switchTab(0);
 </script>
 </body>
- </html>
+     </html>
+ 
