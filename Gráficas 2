@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variables Aleatorias Continuas — EPN</title>
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F1117;
+    color: #E2E8F0;
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    padding: 28px 20px;
+  }
+
+  header { margin-bottom: 28px; }
+  header .eyebrow {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: #64748B; margin-bottom: 6px;
+  }
+  header h1 { font-size: 22px; font-weight: 700; color: #E2E8F0; }
+  header p  { font-size: 12px; color: #64748B; margin-top: 4px; }
+
+  /* tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .tab {
+    padding: 7px 18px; border-radius: 8px; border: 1px solid #2A2F3D;
+    background: transparent; color: #64748B;
+    font-family: 'Courier New', monospace; font-size: 12px;
+    cursor: pointer; transition: all .15s;
+  }
+  .tab.active-e1 { border-color: #38BDF8; color: #38BDF8; background: #38BDF811; font-weight: 700; }
+  .tab.active-e2 { border-color: #A78BFA; color: #A78BFA; background: #A78BFA11; font-weight: 700; }
+  .tab.active-e3 { border-color: #34D399; color: #34D399; background: #34D39911; font-weight: 700; }
+
+  /* function badge */
+  .fn-badge {
+    border-radius: 8px; padding: 10px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+    font-size: 14px; font-weight: 700;
+  }
+  .fn-badge span.domain { font-size: 12px; font-weight: 400; color: #64748B; }
+
+  /* cards */
+  .card {
+    background: #181C24; border: 1px solid #2A2F3D;
+    border-radius: 12px; padding: 18px 16px 12px;
+    margin-bottom: 0;
+  }
+  .card-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 2px;
+  }
+  .card-sub { font-size: 11px; color: #64748B; margin-bottom: 14px; }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px; margin: 18px 0;
+  }
+  .divider hr { flex: 1; border: none; border-top: 1px solid #2A2F3D; }
+  .divider span { font-size: 10px; color: #64748B; letter-spacing: 2px; white-space: nowrap; }
+
+  /* prob badge inside chart card */
+  .prob-badge {
+    display: inline-block; border-radius: 6px;
+    padding: 3px 12px; font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  canvas { max-width: 100%; display: block; }
+
+  footer { margin-top: 22px; text-align: center; font-size: 10px; color: #2A2F3D; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Probabilidad y Estadística · EPN · GR2</div>
+  <h1>Variables Aleatorias Continuas</h1>
+  <p>Funciones de densidad — gráfica pura + área de probabilidad + frecuencia acumulada F(x)</p>
+</header>
+
+<div class="tabs">
+  <button class="tab" data-tab="0" onclick="switchTab(0)">Ej. 1 — Eje torneado</button>
+  <button class="tab" data-tab="1" onclick="switchTab(1)">Ej. 2 — Sensor voltaje</button>
+  <button class="tab" data-tab="2" onclick="switchTab(2)">Ej. 3 — Actuador</button>
+</div>
+
+<!-- ══ EJERCICIO 1 ══ -->
+<div id="ex0">
+  <div class="fn-badge" style="border:1px solid #38BDF833; background:#38BDF811;">
+    <span style="color:#38BDF8">f(x) = ¾ (x−19)(21−x)</span>
+    <span class="domain">x ∈ [19, 21]</span>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#38BDF8">① FUNCIÓN DE DENSIDAD</div>
+    <div class="card-sub">Curva f(x) — sin probabilidad sombreada · línea punteada en μ = 20</div>
+    <canvas id="pure0" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>PROBABILIDAD DEL INTERVALO</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#38BDF8">② ÁREA DE PROBABILIDAD</div>
+    <div class="card-sub">Área sombreada: rango de aceptación del eje (19.6 mm – 20.4 mm)</div>
+    <div class="prob-badge" style="background:#38BDF822; border:1px solid #38BDF855; color:#38BDF8">
+      P(19.6 ≤ X ≤ 20.4) = <strong>0.9328</strong>
+    </div>
+    <canvas id="shade0" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>FRECUENCIA ACUMULADA</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#38BDF8">③ FDA — F(x) ACUMULADA</div>
+    <div class="card-sub">F(x) = ¾ (−x³/3 + 20x² − 399x) + C  · sube de 0 a 1 en [19, 21]</div>
+    <canvas id="cdf0" height="220"></canvas>
+  </div>
+</div>
+
+<!-- ══ EJERCICIO 2 ══ -->
+<div id="ex1" class="hidden">
+  <div class="fn-badge" style="border:1px solid #A78BFA33; background:#A78BFA11;">
+    <span style="color:#A78BFA">f(v) = ¾ (4v − v² − 3)</span>
+    <span class="domain">v ∈ [1, 3]</span>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#A78BFA">① FUNCIÓN DE DENSIDAD</div>
+    <div class="card-sub">Curva f(v) — sin probabilidad sombreada · línea punteada en μ = 2</div>
+    <canvas id="pure1" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>PROBABILIDAD DEL INTERVALO</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#A78BFA">② ÁREA DE PROBABILIDAD</div>
+    <div class="card-sub">Área sombreada: rango aceptable del sensor (1.5 V – 2.5 V)</div>
+    <div class="prob-badge" style="background:#A78BFA22; border:1px solid #A78BFA55; color:#A78BFA">
+      P(1.5 ≤ V ≤ 2.5) = <strong>0.7188</strong>
+    </div>
+    <canvas id="shade1" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>FRECUENCIA ACUMULADA</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#A78BFA">③ FDA — F(v) ACUMULADA</div>
+    <div class="card-sub">F(v) = (3/16)(2v² − v³/3 − 3v) + C  · sube de 0 a 1 en [1, 3]</div>
+    <canvas id="cdf1" height="220"></canvas>
+  </div>
+</div>
+
+<!-- ══ EJERCICIO 3 ══ -->
+<div id="ex2" class="hidden">
+  <div class="fn-badge" style="border:1px solid #34D39933; background:#34D39911;">
+    <span style="color:#34D399">f(t) = t/18</span>
+    <span class="domain">t ∈ [0, 6]</span>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#34D399">① FUNCIÓN DE DENSIDAD</div>
+    <div class="card-sub">Curva f(t) — lineal creciente · E[T] = 4 ms · sesgo izquierda</div>
+    <canvas id="pure2" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>PROBABILIDAD DEL INTERVALO</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#34D399">② ÁREA DE PROBABILIDAD</div>
+    <div class="card-sub">Área sombreada: actuador responde dentro del requerimiento (t &lt; 4 ms)</div>
+    <div class="prob-badge" style="background:#34D39922; border:1px solid #34D39955; color:#34D399">
+      P(T &lt; 4) = <strong>0.4444</strong>
+    </div>
+    <canvas id="shade2" height="220"></canvas>
+  </div>
+  <div class="divider"><hr><span>FRECUENCIA ACUMULADA</span><hr></div>
+  <div class="card">
+    <div class="card-title" style="color:#34D399">③ FDA — F(t) ACUMULADA</div>
+    <div class="card-sub">F(t) = t²/36  · parábola convexa de 0 a 1 en [0, 6] · forma pizarra</div>
+    <canvas id="cdf2" height="220"></canvas>
+  </div>
+</div>
+
+<footer>Andree Mateo Lomas Moncayo · GR2 · 2025-2026</footer>
+
+<script>
+// ── utilidades ──
+function linspace(a, b, n) {
+  return Array.from({ length: n }, (_, i) => a + (i / (n - 1)) * (b - a));
+}
+
+// ── funciones ──
+const f1 = x => (x<19||x>21) ? 0 : 0.75*(x-19)*(21-x);
+const f2 = v => (v<1||v>3)   ? 0 : (3/4)*(4*v - v*v - 3);
+const f3 = t => (t<0||t>6)   ? 0 : t/18;
+
+// ══════════════════════════════════════════════
+// MOTOR CANVAS PURO — reemplaza Chart.js
+// ══════════════════════════════════════════════
+const MUTED  = '#64748B';
+const GRID_C = '#2A2F3D';
+const PANEL  = '#181C24';
+
+function buildCDF(fn, a, b, n=400) {
+  const xs = linspace(a, b, n);
+  const dx = (b-a)/(n-1);
+  const cdf = [0];
+  for (let i=1; i<n; i++)
+    cdf.push(cdf[i-1] + 0.5*(fn(xs[i-1])+fn(xs[i]))*dx);
+  const max = cdf[cdf.length-1];
+  return { xs, cdf: cdf.map(v => v/max) };
+}
+
+function drawChart(opts) {
+  const {
+    canvasId, fn, xMin, xMax, yMin, yMax,
+    color, xLabel, yLabel,
+    shadeFrom, shadeTo,
+    isCDF,
+    refVerticals = [],
+    refHorizontal,
+    padL=0.12, padR=0.12
+  } = opts;
+
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const W   = Math.max(canvas.parentElement.clientWidth - 36, 200);
+  const H   = 220;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const ml=54, mr=16, mt=18, mb=40;
+  const pw = W-ml-mr, ph = H-mt-mb;
+
+  const range = xMax-xMin;
+  const xLo = xMin - range*padL;
+  const xHi = xMax + range*padR;
+
+  const xPx = x  => ml + (x-xLo)/(xHi-xLo)*pw;
+  const yPx = y  => mt + ph - (y-yMin)/(yMax-yMin)*ph;
+  const clampY = y => Math.max(yMin, Math.min(yMax, y));
+
+  // fondo
+  ctx.fillStyle = PANEL;
+  ctx.fillRect(0,0,W,H);
+
+  // grid horizontal
+  const ySteps = 5;
+  for (let i=0; i<=ySteps; i++) {
+    const yv = yMin + i*(yMax-yMin)/ySteps;
+    const yp = yPx(yv);
+    ctx.strokeStyle = GRID_C; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ml,yp); ctx.lineTo(ml+pw,yp); ctx.stroke();
+    ctx.fillStyle = MUTED;
+    ctx.font = "10px 'Courier New',monospace";
+    ctx.textAlign = 'right';
+    ctx.fillText(isCDF ? yv.toFixed(1) : yv.toFixed(2), ml-6, yp+3);
+  }
+  // grid vertical
+  const xSteps = 6;
+  for (let i=0; i<=xSteps; i++) {
+    const xv = xLo + i*(xHi-xLo)/xSteps;
+    const xp = xPx(xv);
+    ctx.strokeStyle = GRID_C; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(xp,mt); ctx.lineTo(xp,mt+ph); ctx.stroke();
+    ctx.fillStyle = MUTED;
+    ctx.font = "10px 'Courier New',monospace";
+    ctx.textAlign = 'center';
+    ctx.fillText(xv.toFixed(2), xp, mt+ph+16);
+  }
+
+  // ejes
+  ctx.strokeStyle = '#3A4050'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(ml,mt); ctx.lineTo(ml,mt+ph); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ml,mt+ph); ctx.lineTo(ml+pw,mt+ph); ctx.stroke();
+
+  // etiqueta X
+  ctx.fillStyle = MUTED;
+  ctx.font = "11px 'Courier New',monospace";
+  ctx.textAlign = 'center';
+  ctx.fillText(xLabel, ml+pw/2, H-4);
+  // etiqueta Y
+  ctx.save();
+  ctx.translate(13, mt+ph/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText(yLabel, 0, 0);
+  ctx.restore();
+
+  // ── generar puntos ──
+  const N = 500;
+  let xs, ys;
+  if (isCDF) {
+    const built = buildCDF(fn, xMin, xMax, N);
+    const lxs = linspace(xLo, xMin, 30);
+    const rxs = linspace(xMax, xHi, 30);
+    xs = [...lxs, ...built.xs, ...rxs];
+    ys = [...lxs.map(()=>0), ...built.cdf, ...rxs.map(()=>1)];
+  } else {
+    xs = linspace(xLo, xHi, N);
+    ys = xs.map(fn);
+  }
+
+  // ── área sombreada ──
+  if (shadeFrom !== undefined && shadeTo !== undefined) {
+    ctx.beginPath();
+    let started = false;
+    for (let i=0; i<xs.length; i++) {
+      if (xs[i] < shadeFrom || xs[i] > shadeTo) continue;
+      const xp = xPx(xs[i]), yp = yPx(clampY(ys[i]));
+      if (!started) { ctx.moveTo(xp, yPx(yMin)); ctx.lineTo(xp,yp); started=true; }
+      else ctx.lineTo(xp,yp);
+    }
+    if (started) {
+      ctx.lineTo(xPx(Math.min(shadeTo,xMax)), yPx(yMin));
+      ctx.closePath();
+      ctx.fillStyle = color+'44';
+      ctx.fill();
+    }
+  }
+
+  // ── líneas verticales de referencia ──
+  refVerticals.forEach(rv => {
+    const xp = xPx(rv.x);
+    ctx.save();
+    ctx.setLineDash([5,4]);
+    ctx.strokeStyle = color+'AA'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(xp,mt); ctx.lineTo(xp,mt+ph); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = color;
+    ctx.font = "10px 'Courier New',monospace";
+    ctx.textAlign = 'left';
+    ctx.fillText(rv.label, xp+4, mt+14);
+    ctx.restore();
+  });
+
+  // ── línea horizontal de referencia ──
+  if (refHorizontal) {
+    const yp = yPx(refHorizontal.y);
+    ctx.save();
+    ctx.setLineDash([4,3]);
+    ctx.strokeStyle = color+'66'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(ml,yp); ctx.lineTo(ml+pw,yp); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = color+'BB';
+    ctx.font = "10px 'Courier New',monospace";
+    ctx.textAlign = 'left';
+    ctx.fillText(refHorizontal.label, ml+4, yp-4);
+    ctx.restore();
+  }
+
+  // ── curva principal ──
+  ctx.beginPath();
+  ctx.strokeStyle = color; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  let first=true;
+  for (let i=0; i<xs.length; i++) {
+    const xp = xPx(xs[i]);
+    const yp = yPx(clampY(ys[i]));
+    if (first) { ctx.moveTo(xp,yp); first=false; } else ctx.lineTo(xp,yp);
+  }
+  ctx.stroke();
+}
+
+function drawAll() {
+  // ── EJ 1: f(x) = ¾(x-19)(21-x), x∈[19,21] ──
+  drawChart({ canvasId:'pure0', fn:f1, xMin:19, xMax:21, yMin:0, yMax:0.8,
+    color:'#38BDF8', xLabel:'x (mm)', yLabel:'f(x)',
+    refVerticals:[{x:20, label:'μ=20'}] });
+
+  drawChart({ canvasId:'shade0', fn:f1, xMin:19, xMax:21, yMin:0, yMax:0.8,
+    color:'#38BDF8', xLabel:'x (mm)', yLabel:'f(x)',
+    shadeFrom:19.6, shadeTo:20.4,
+    refVerticals:[{x:19.6, label:'19.6'},{x:20.4, label:'20.4'}] });
+
+  drawChart({ canvasId:'cdf0', fn:f1, xMin:19, xMax:21, yMin:0, yMax:1,
+    color:'#38BDF8', xLabel:'x (mm)', yLabel:'F(x)',
+    isCDF:true, refHorizontal:{y:0.5, label:'F=0.5'} });
+
+  // ── EJ 2: f(v) = 3/16(4v-v²-3), v∈[1,3] ──
+  drawChart({ canvasId:'pure1', fn:f2, xMin:1, xMax:3, yMin:0, yMax:0.8,
+    color:'#A78BFA', xLabel:'v (V)', yLabel:'f(v)',
+    refVerticals:[{x:2, label:'μ=2'}] });
+
+  drawChart({ canvasId:'shade1', fn:f2, xMin:1, xMax:3, yMin:0, yMax:0.8,
+    color:'#A78BFA', xLabel:'v (V)', yLabel:'f(v)',
+    shadeFrom:1.5, shadeTo:2.5,
+    refVerticals:[{x:1.5, label:'1.5 V'},{x:2.5, label:'2.5 V'}] });
+
+  drawChart({ canvasId:'cdf1', fn:f2, xMin:1, xMax:3, yMin:0, yMax:1,
+    color:'#A78BFA', xLabel:'v (V)', yLabel:'F(v)',
+    isCDF:true, refHorizontal:{y:0.5, label:'F=0.5'} });
+
+  // ── EJ 3: f(t) = t/18, t∈[0,6] ──
+  drawChart({ canvasId:'pure2', fn:f3, xMin:0, xMax:6, yMin:0, yMax:0.4,
+    color:'#34D399', xLabel:'t (ms)', yLabel:'f(t)',
+    padL:0.05, padR:0.05,
+    refVerticals:[{x:4, label:'E[T]=4'}] });
+
+  drawChart({ canvasId:'shade2', fn:f3, xMin:0, xMax:6, yMin:0, yMax:0.4,
+    color:'#34D399', xLabel:'t (ms)', yLabel:'f(t)',
+    padL:0.05, padR:0.05,
+    shadeFrom:0, shadeTo:4,
+    refVerticals:[{x:4, label:'4 ms'}] });
+
+  drawChart({ canvasId:'cdf2', fn:f3, xMin:0, xMax:6, yMin:0, yMax:1,
+    color:'#34D399', xLabel:'t (ms)', yLabel:'F(t)',
+    padL:0.05, padR:0.05,
+    isCDF:true, refHorizontal:{y:0.5, label:'F=0.5'} });
+}
+
+// ── tabs (SIN CAMBIOS en lógica) ──
+const COLORS = ['active-e1','active-e2','active-e3'];
+function switchTab(n) {
+  [0,1,2].forEach(i => {
+    document.getElementById('ex'+i).classList.toggle('hidden', i!==n);
+    const btn = document.querySelector(`[data-tab="${i}"]`);
+    btn.className = 'tab' + (i===n ? ' '+COLORS[i] : '');
+  });
+  setTimeout(drawAll, 20);
+}
+
+window.addEventListener('load', () => switchTab(0));
+window.addEventListener('resize', drawAll);
+
+</script>
+</body>
+</html>
